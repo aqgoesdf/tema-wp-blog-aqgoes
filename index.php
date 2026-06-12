@@ -8,7 +8,7 @@
           <span class="hero__tag">🚀 Tecnologia em tempo real</span>
           
           <h1 class="hero__title">
-            <?php bloginfo( 'name' ); ?>
+            <em><?php bloginfo( 'name' ); ?></em>
           </h1>
           
           <p class="hero__desc">
