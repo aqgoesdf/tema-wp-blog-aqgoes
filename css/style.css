@@ -1140,3 +1140,14 @@ em { font-style: normal; background: var(--grad-primary); -webkit-background-cli
 @media (max-width: 900px) {
   .contact__grid { grid-template-columns: 1fr; }
 }
+
+
+
+
+/*Estilos adcionais*/
+.news__card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Faz a imagem preencher o espaço como um plano de fundo, sem distorcer */
+    display: block;
+}

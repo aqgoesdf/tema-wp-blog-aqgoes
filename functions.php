@@ -26,6 +26,14 @@ function aqgoes_theme_config() {
         'footer-paginas' => 'Menu Rodapé - Páginas',
         'footer-categoria' => 'Menu Rodapé - Categorias',
     ) );
+
+  // Ativa o suporte a Imagens Destacadas
+    add_theme_support( 'post-thumbnails' );
+
+    // Define um tamanho personalizado chamado 'imagem-destaque' (1200px de largura por 675px de altura)
+    // O parâmetro 'true' no final ativa o "Hard Crop" (o WordPress corta a imagem exatamente nessa proporção)
+    add_image_size( 'imagem-destaque', 1200, 675, true );
+
 }
 add_action( 'after_setup_theme', 'aqgoes_theme_config' );
 

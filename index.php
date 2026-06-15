@@ -86,19 +86,12 @@
 
                   <article class="<?php echo $card_class; ?>">
                     <div class="news__card-img">
-                      <?php if ( has_post_thumbnail() ) : ?>
-                          <!-- Se você subir uma imagem no painel, ela aparece aqui -->
-                          <?php the_post_thumbnail('large'); ?>
-                      <?php else : ?>
-                          <!-- Caso não suba imagem, mantém o seu placeholder original baseado na categoria -->
-                          <div class="news__card-placeholder" data-category="<?php echo $category_name; ?>"></div>
-                      <?php endif; ?>
-
-                      <?php if ( $contador === 1 ) : ?>
-                          <span class="news__badge">Em Alta</span>
-                      <?php endif; ?>
-                    </div>
-                    
+                        <?php if ( has_post_thumbnail() ) : ?>
+                            <?php the_post_thumbnail( 'imagem-destaque' ); ?>
+                        <?php else : ?>
+                            <div class="news__card-placeholder" data-category="<?php echo $category_name; ?>"></div>
+                        <?php endif; ?>
+                      </div>
                     <div class="news__body-wrapper" style="display: contents;">
                       <div class="news__card-body">
                         <span class="news__category"><?php echo $category_name; ?></span>
