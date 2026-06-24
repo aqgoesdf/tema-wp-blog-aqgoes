@@ -894,6 +894,19 @@ em { font-style: normal; background: var(--grad-primary); -webkit-background-cli
   padding: 1.25rem;
   transition: var(--transition);
 }
+
+
+/*Edição AqGoEs*/
+.article__card img{
+  border-radius: 20px;
+  margin-top: auto;
+}
+.article__card img:hover{
+  transform: translateY(-3px);
+}
+/*Finaliado as definições das imagens dos artigos*/
+
+
 .article__card:hover {
   border-color: rgba(108,99,255,0.4);
   transform: translateY(-3px);
@@ -1151,3 +1164,159 @@ em { font-style: normal; background: var(--grad-primary); -webkit-background-cli
     object-fit: cover; /* Faz a imagem preencher o espaço como um plano de fundo, sem distorcer */
     display: block;
 }
+
+
+
+/* ==========================================================================
+   PÁGINA INTERNA DO ARTIGO (SINGLE.PHP)
+   ========================================================================== */
+
+/* Limitação do container interno para melhorar o foco e a leitura */
+.container--narrow {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Header do Artigo */
+.article-hero {
+    background-color: var(--bg-card, #f8f9fa); /* Altere para sua variável de fundo secundário se houver */
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.article-hero__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.article-hero__back {
+    font-size: 0.9rem;
+    color: var(--text-muted, #6c757d);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    align-self: flex-start; /* Alinha o botão de voltar à esquerda */
+}
+
+.article-hero__back:hover {
+    color: var(--primary-color, #007bff);
+}
+
+.article-hero__title {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    color: var(--text-color, #212529);
+    max-width: 750px;
+    margin: 0.5rem 0;
+}
+
+.article-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    font-size: 0.95rem;
+    color: var(--text-muted, #6c757d);
+}
+
+/* Imagem de Destaque Interna */
+.article-body__featured-img {
+    width: 100%;
+    margin-bottom: 3rem;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.article-body__featured-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* Formatação do conteúdo vindo do WordPress (the_content) */
+.article-body__content {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: var(--text-color, #212529);
+}
+
+/* Parágrafos e espaçamentos */
+.article-body__content p {
+    margin-bottom: 1.75rem;
+    color: #fff;
+}
+
+/* Títulos internos criados no editor de texto */
+.article-body__content h2,
+.article-body__content h3 {
+    color: var(--text-color, #212529);
+    margin: 2.5rem 0 1rem 0;
+    line-height: 1.3;
+}
+
+.article-body__content h2 { font-size: 1.8rem; }
+.article-body__content h3 { font-size: 1.4rem; }
+
+/* Listas internas */
+.article-body__content ul,
+.article-body__content ol {
+    margin-bottom: 1.75rem;
+    padding-left: 1.5rem;
+}
+
+.article-body__content li {
+    margin-bottom: 0.5rem;
+}
+
+/* Citações em Bloco (Blockquotes) */
+.article-body__content blockquote {
+    margin: 2rem 0;
+    padding: 1rem 1.5rem;
+    border-left: 4px solid var(--primary-color, #007bff);
+    background-color: var(--bg-card, #f8f9fa);
+    font-style: italic;
+    color: var(--text-muted, #6c757d);
+}
+
+/* Rodapé do Artigo */
+.article-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.article-footer__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag-item {
+    font-size: 0.85rem;
+    background: rgba(0, 0, 0, 0.04);
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    color: var(--text-muted, #6c757d);
+}
+
+/* Responsividade Básica */
+@media (max-width: 768px) {
+    .article-hero__title {
+        font-size: 2rem;
+    }
+    
+    .article-body__content {
+        font-size: 1.05rem;
+    }
+    
+    .article-hero__meta {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+    }
+}
+
+
+
