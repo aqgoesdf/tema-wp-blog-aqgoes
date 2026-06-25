@@ -1,45 +1,42 @@
 <?php
 /**
  * Template Name: Página de Artigos (Blog)
- * Description: Modelo customizado completo com Hero, Filtros, Busca e Grid Dinâmico de Artigos.
+ * Description: Modelo customizado completo com Hero, Filtros, Busca e Paginação Dinâmica Nativa.
+ * @package Blog_AqGoEs
  */
 
 get_header(); ?>
 
-<main>
+<main id="primary" class="site-main content-area">
 
-    <!-- ========== PAGE HERO ========== -->
     <section class="page-hero">
       <div class="container">
-        <span class="hero__tag">📚 Biblioteca de conteúdo</span>
-        <h1>Todos os <em>Artigos</em></h1>
+        <span class="hero__tag">📚 <?php _e('Biblioteca de conteúdo', 'aqgoes'); ?></span>
+        <h1><?php printf( __( 'Todos os %sArtigos%s', 'aqgoes' ), '<em>', '</em>' ); ?></h1>
         <?php 
         // Conta dinamicamente o número total de posts publicados no site
         $total_posts_publicados = wp_count_posts()->publish; 
         ?>
-        <p><?php echo esc_html( $total_posts_publicados ); ?> artigos técnicos sobre HTML, CSS, JavaScript e Python.</p>
+        <p><?php echo esc_html( $total_posts_publicados ); ?> <?php _e('artigos técnicos sobre HTML, CSS, JavaScript e Python.', 'aqgoes'); ?></p>
       </div>
     </section>
 
-    <!-- ========== FILTROS + BUSCA ========== -->
     <section class="articles-controls section-pad">
       <div class="container">
         <div class="controls__bar">
           
-          <!-- Busca -->
           <div class="search__wrapper">
-            <label for="searchInput" class="sr-only">Buscar artigos</label>
+            <label for="searchInput" class="sr-only"><?php _e('Buscar artigos', 'aqgoes'); ?></label>
             <input
               type="search"
               id="searchInput"
-              placeholder="🔍 Buscar artigos..."
+              placeholder="<?php esc_attr_e('🔍 Buscar artigos...', 'aqgoes'); ?>"
               class="search__input"
             />
           </div>
 
-          <!-- Filtros por categoria -->
-          <div class="filter__tabs" role="tablist" aria-label="Filtrar por categoria">
-            <button class="filter__tab active" data-filter="all" role="tab" aria-selected="true">Todos</button>
+          <div class="filter__tabs" role="tablist" aria-label="<?php esc_attr_e('Filtrar por categoria', 'aqgoes'); ?>">
+            <button class="filter__tab active" data-filter="all" role="tab" aria-selected="true"><?php _e('Todos', 'aqgoes'); ?></button>
             <button class="filter__tab" data-filter="html" role="tab" aria-selected="false">HTML</button>
             <button class="filter__tab" data-filter="css" role="tab" aria-selected="false">CSS</button>
             <button class="filter__tab" data-filter="javascript" role="tab" aria-selected="false">JavaScript</button>
@@ -50,31 +47,35 @@ get_header(); ?>
       </div>
     </section>
 
-    <!-- ========== LISTA DE ARTIGOS ========== -->
     <section class="articles-list section-pad">
       <div class="container">
         
         <?php
-        // Configuramos a consulta para buscar TODOS os posts cadastrados 
-        // para que o seu script JS de filtro estático consiga filtrar tudo na mesma página
+        // PASSO 1: Captura a página de paginação atual de forma segura
+        $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
+
+        // PASSO 2: Configuração da Query Dinâmica e Escalável
         $args = array(
             'post_type'      => 'post',
-            'posts_per_page' => -1, // -1 traz todos os posts existentes sem paginação PHP
+            'posts_per_page' => get_option( 'posts_per_page' ), // Puxa o valor definido no painel do WordPress
+            'paged'          => $paged,
             'post_status'    => 'publish'
         );
 
         $query_todos_posts = new WP_Query( $args );
-        $posts_encontrados = $query_todos_posts->post_count;
+        $posts_encontrados = $query_todos_posts->found_posts; // Traz o total absoluto encontrado pela query, não apenas da página atual
         ?>
 
-        <p class="articles__count" id="articlesCount">Mostrando <strong><?php echo esc_html( $posts_encontrados ); ?></strong> artigos</p>
+        <p class="articles__count" id="articlesCount">
+            <?php printf( __( 'Mostrando %s artigos', 'aqgoes' ), '<strong>' . esc_html( $posts_encontrados ) . '</strong>' ); ?>
+        </p>
 
         <div class="articles__grid" id="articlesGrid">
 
           <?php
           if ( $query_todos_posts->have_posts() ) :
               
-              // Mapeador de classes de thumb e ícones com base no slug da categoria do WordPress
+              // Mapeador de classes de thumb e ícones com base no slug da categoria
               $estilos_categorias = array(
                   'html'       => array('class' => 'article__thumb--html', 'icon' => '🌐'),
                   'css'        => array('class' => 'article__thumb--css', 'icon' => '🎨'),
@@ -84,30 +85,21 @@ get_header(); ?>
 
               while ( $query_todos_posts->have_posts() ) : $query_todos_posts->the_post(); 
                   
-                  // Obtém as categorias do post atual
                   $categories = get_the_category();
-                  
-                  // Se o post tiver categoria, pegamos o slug e nome dela; senão, definimos padrões
                   $cat_slug = !empty($categories) ? $categories[0]->slug : 'all';
-                  $cat_name = !empty($categories) ? $categories[0]->name : 'Geral';
+                  $cat_name = !empty($categories) ? $categories[0]->name : __('Geral', 'aqgoes');
 
-                  // Busca as configurações visuais mapeadas acima (fallbacks caso crie slugs diferentes)
                   $thumb_class = isset($estilos_categorias[$cat_slug]['class']) ? $estilos_categorias[$cat_slug]['class'] : '';
                   $icon        = isset($estilos_categorias[$cat_slug]['icon']) ? $estilos_categorias[$cat_slug]['icon'] : '📂';
                   
-                  // Formatação amigável do tempo de leitura (caso utilize campos personalizados, ou fixo)
                   $tempo_leitura = '8 min'; 
                   ?>
 
-                  <!-- 
-                    Injetamos dinamicamente o slug da categoria no 'data-category'.
-                    Seu script.js lerá exatamente esse atributo para fazer a mágica do filtro!
-                  -->
                   <article class="article__card" data-category="<?php echo esc_attr( $cat_slug ); ?>">
                     
                     <div class="article__thumb <?php echo esc_attr( $thumb_class ); ?>">
                       <?php if ( has_post_thumbnail() ) : ?>
-                          <?php the_post_thumbnail( 'medium' ); // Carrega tamanho menor otimizado para miniaturas ?>
+                          <?php the_post_thumbnail( 'medium' ); ?>
                       <?php else : ?>
                           <span><?php echo esc_html( $icon ); ?></span>
                       <?php endif; ?>
@@ -116,11 +108,11 @@ get_header(); ?>
                     <div class="article__body">
                       <span class="news__category"><?php echo esc_html( $cat_name ); ?></span>
                       <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-                      <p><?php echo wp_trim_words( get_the_excerpt(), 15, '...' ); // Limita o resumo a 15 palavras ?></p>
+                      <p><?php echo wp_trim_words( get_the_excerpt(), 15, '...' ); ?></p>
                       
                       <div class="article__meta">
                         <span>👤 <?php the_author(); ?></span>
-                        <span>📅 <?php echo get_the_date('M Y'); // Formato compacto: "Fev 2025" ?></span>
+                        <span>📅 <?php echo get_the_date('M Y'); ?></span>
                         <span>⏱ <?php echo esc_html( $tempo_leitura ); ?></span>
                       </div>
                     </div>
@@ -129,25 +121,32 @@ get_header(); ?>
 
                   <?php
               endwhile;
-              wp_reset_postdata(); // Sempre limpe a consulta customizada após o loop
+              ?>
+        </div> <nav class="pagination" aria-label="<?php esc_attr_e('Paginação de artigos', 'aqgoes'); ?>">
+            <?php
+            echo paginate_links( array(
+                'base'         => str_replace( 999999999, '%#%', esc_url( get_pagenum_link( 999999999 ) ) ),
+                'total'        => $query_todos_posts->max_num_pages,
+                'current'      => max( 1, $paged ),
+                'format'       => '?paged=%#%',
+                'show_all'     => false,
+                'type'         => 'plain',
+                'prev_text'    => __( '← Anterior', 'aqgoes' ),
+                'next_text'    => __( 'Próxima →', 'aqgoes' ),
+            ) );
+            ?>
+        </nav>
+
+        <?php
+            wp_reset_postdata(); // Restaura dados globais da query do WP
           else :
-              echo '<p>Nenhum artigo publicado encontrado.</p>';
+              ?>
+              </div> <div class="articles__empty" id="articlesEmpty">
+                <p>😕 <?php _e('Nenhum artigo encontrado.', 'aqgoes'); ?></p>
+              </div>
+              <?php
           endif;
           ?>
-
-        </div>
-
-        <!-- Mensagem sem resultados (controlado e exibido pelo seu script.js através da remoção da classe hidden) -->
-        <div class="articles__empty hidden" id="articlesEmpty">
-          <p>😕 Nenhum artigo encontrado para "<strong id="searchTerm"></strong>"</p>
-        </div>
-
-        <!-- Paginação original mantida caso seu JS controle a paginação no front-end -->
-        <nav class="pagination" aria-label="Paginação">
-          <button class="pagination__btn" disabled>← Anterior</button>
-          <span class="pagination__info">Página 1 de 1</span>
-          <button class="pagination__btn">Próxima →</button>
-        </nav>
         
       </div>
     </section>

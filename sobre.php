@@ -1,13 +1,13 @@
-/*
-    Template Name: Página Sobre Blog AqGoEs
+<?php
+/**
+ * Template Name: Página Sobre Blog AqGoEs
+ */
 
-*/
-
-<?php get_header(); ?>
+get_header(); 
+?>
 
   <main>
 
-    <!-- PAGE HERO -->
     <section class="page-hero">
       <div class="container">
         <span class="hero__tag">👋 Quem somos</span>
@@ -16,18 +16,17 @@
       </div>
     </section>
 
-    <!-- MISSÃO -->
     <section class="about-mission section-pad">
       <div class="container about-mission__grid">
         <div class="about-mission__text">
           <h2>Nossa <span>Missão</span></h2>
           <p>
-            O TechPulse nasceu da frustração com conteúdos rasos e tutoriais que param no "Hello World".
+            O <strong>AqGoEs</strong> nasceu com o objetivo de ir além dos conteúdos rasos e tutoriais que param no "Hello World".
             Queremos ir fundo: explicar o porquê das coisas, mostrar as melhores práticas e preparar
             desenvolvedores para o mercado real.
           </p>
           <p>
-            Cobrimos as quatro pilares do desenvolvimento web moderno: <strong>HTML</strong> semântico,
+            Cobrimos os quatro pilares do desenvolvimento web moderno: <strong>HTML</strong> semântico,
             <strong>CSS</strong> avançado, <strong>JavaScript</strong> moderno e <strong>Python</strong>
             para o back-end. Sem enrolação.
           </p>
@@ -53,7 +52,6 @@
       </div>
     </section>
 
-    <!-- TECNOLOGIAS -->
     <section class="about-tech section-pad">
       <div class="container">
         <h2 class="section__title">O que <span>abordamos</span></h2>
@@ -96,48 +94,46 @@
       </div>
     </section>
 
-    <!-- EQUIPE -->
     <section class="about-team section-pad">
       <div class="container">
         <h2 class="section__title">A <span>Equipe</span></h2>
         <div class="team__grid">
 
           <article class="team__card">
-            <div class="team__avatar team__avatar--1">AD</div>
-            <h3>Ana Dev</h3>
-            <span class="team__role">Front-end & CSS</span>
-            <p>Especialista em design systems e CSS avançado. 8 anos de experiência em UIs complexas.</p>
+            <div class="team__avatar team__avatar--1">AQ</div>
+            <h3>Alan Queirós</h3>
+            <span class="team__role">Fullstack Developer</span>
+            <p>Idealizador do projeto, focado em criar arquiteturas de software limpas usando Next.js, Python e automações inteligentes.</p>
           </article>
 
           <article class="team__card">
-            <div class="team__avatar team__avatar--2">CB</div>
-            <h3>Carlos Backend</h3>
-            <span class="team__role">Python & APIs</span>
-            <p>Desenvolvedor Python há 6 anos, apaixonado por FastAPI e arquiteturas escaláveis.</p>
+            <div class="team__avatar team__avatar--2">AD</div>
+            <h3>Ana Dev</h3>
+            <span class="team__role">Front-end & UI Designer</span>
+            <p>Especialista em criar layouts fluidos, design systems responsivos e estilizações avançadas em CSS moderno.</p>
           </article>
 
           <article class="team__card">
             <div class="team__avatar team__avatar--3">BF</div>
             <h3>Bia Full Stack</h3>
-            <span class="team__role">JavaScript & Node</span>
-            <p>Full stack com foco em performance web e JavaScript moderno. Contribuidora open source.</p>
+            <span class="team__role">JavaScript Specialist</span>
+            <p>Focada em otimização de performance no client-side, manipulação avançada de DOM e integrações de APIs assíncronas.</p>
           </article>
 
         </div>
       </div>
     </section>
 
-    <!-- CTA -->
     <section class="about-cta section-pad">
       <div class="container">
         <div class="cta__box">
           <h2>Quer contribuir?</h2>
           <p>Estamos sempre abertos a novos autores e parcerias. Entre em contato!</p>
-          <a href="contato.html" class="btn btn--primary">Falar com a gente</a>
+          <a href="<?php echo esc_url( home_url( '/contato' ) ); ?>" class="btn btn--primary">Falar com a gente</a>
         </div>
       </div>
     </section>
 
   </main>
 
-  <?php get_footer(); ?>
+<?php get_footer(); ?>

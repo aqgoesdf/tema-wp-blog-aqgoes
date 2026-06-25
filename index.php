@@ -1,7 +1,7 @@
 <?php get_header(); ?>
 
 <main>
-<section class="hero" id="hero">
+    <section class="hero" id="hero">
       <div class="hero__bg"></div>
       <div class="container hero__content">
         <div class="hero__text">
@@ -48,10 +48,6 @@
       </div>
     </section>
     
-    
-
-
-    <!-- ========== SEÇÃO 2: ÚLTIMAS NOTÍCIAS ========== -->
     <section class="news" id="noticias">
       <div class="container">
         <div class="section__header">
@@ -62,14 +58,15 @@
         <div class="news__grid">
 
           <?php
-          // Criamos uma consulta para pegar os 4 posts mais recentes
+          // Criamos uma consulta para pegar os 5 posts mais recentes
           $args = array(
               'post_type'      => 'post',
               'posts_per_page' => 5,
+              'post_status'    => 'publish',
           );
           $query = new WP_Query( $args );
 
-          // Criamos um contador para identificar qual é o primeiro post
+          // Contador para identificar qual é o primeiro post (Destaque)
           $contador = 0;
 
           if ( $query->have_posts() ) :
@@ -84,14 +81,15 @@
                   $category_name = !empty($categories) ? esc_html($categories[0]->name) : 'Geral';
                   ?>
 
-                  <article class="<?php echo $card_class; ?>">
+                  <article class="<?php echo esc_attr( $card_class ); ?>">
                     <div class="news__card-img">
                         <?php if ( has_post_thumbnail() ) : ?>
                             <?php the_post_thumbnail( 'imagem-destaque' ); ?>
                         <?php else : ?>
-                            <div class="news__card-placeholder" data-category="<?php echo $category_name; ?>"></div>
+                            <div class="news__card-placeholder" data-category="<?php echo esc_attr( $category_name ); ?>"></div>
                         <?php endif; ?>
-                      </div>
+                    </div>
+                    
                     <div class="news__body-wrapper" style="display: contents;">
                       <div class="news__card-body">
                         <span class="news__category"><?php echo $category_name; ?></span>
@@ -100,10 +98,9 @@
                           <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
                         </h3>
                         
-                        <!-- Exibe o resumo do post apenas se for o card em destaque -->
                         <?php if ( $contador === 1 ) : ?>
                             <p class="news__excerpt">
-                              <?php echo wp_trim_words( get_the_excerpt(), 20 ); ?>
+                              <?php echo wp_trim_words( get_the_excerpt(), 20, '...' ); ?>
                             </p>
                         <?php endif; ?>
                         
@@ -117,7 +114,7 @@
 
               <?php 
               endwhile;
-              wp_reset_postdata(); // Limpa a consulta para não afetar o resto da página
+              wp_reset_postdata(); // Restaura as variáveis globais originais do post loop do WP
           else : 
               echo '<p>Nenhum artigo publicado ainda.</p>';
           endif; 
@@ -127,10 +124,7 @@
       </div>
     </section>
 
-
-
-
-<section class="categories" id="categorias">
+    <section class="categories" id="categorias">
       <div class="container">
         <div class="section__header">
           <h2 class="section__title">Explore por <span>Categoria</span></h2>
@@ -140,7 +134,6 @@
 
           <?php
           // Buscamos apenas as categorias que mapeamos no seu HTML original
-          // Certifique-se de que o "slug" delas no painel seja exatamente: html, css, javascript e python
           $slugs_desejados = array('html', 'css', 'javascript', 'python');
           
           $categorias = get_categories( array(
@@ -148,8 +141,7 @@
               'hide_empty' => false, // Mostra a categoria mesmo se ainda não tiver posts cadastrados
           ) );
 
-          // Criamos um mapa para os ícones e descrições estáticas do seu projeto,
-          // indexados pelo slug da categoria no WordPress
+          // Mapa para os ícones e descrições estáticas do seu projeto
           $dados_customizados = array(
               'html' => array(
                   'icon' => '🌐',
@@ -164,7 +156,7 @@
               'javascript' => array(
                   'icon' => '⚡',
                   'desc' => 'ES2025, APIs modernas e performance',
-                  'class'=> 'category__card--js' // Mantém a classe 'category__card--js' se o seu slug for javascript
+                  'class'=> 'category__card--js'
               ),
               'python' => array(
                   'icon' => '🐍',
@@ -177,15 +169,12 @@
               foreach ( $categorias as $categoria ) {
                   $slug = $categoria->slug;
                   
-                  // Se a categoria mapear com nosso array customizado, usamos os dados dela
                   $icone  = isset($dados_customizados[$slug]['icon']) ? $dados_customizados[$slug]['icon'] : '📂';
                   $desc   = isset($dados_customizados[$slug]['desc']) ? $dados_customizados[$slug]['desc'] : $categoria->description;
                   $classe_extra = isset($dados_customizados[$slug]['class']) ? $dados_customizados[$slug]['class'] : '';
                   
-                  // Link correto gerado pelo WordPress para listar os artigos da categoria
                   $link_categoria = get_category_link( $categoria->term_id );
                   
-                  // Quantidade real de posts vinculados a essa categoria
                   $total_posts = $categoria->count;
                   $texto_artigos = ( $total_posts == 1 ) ? '1 artigo' : $total_posts . ' artigos';
                   ?>
@@ -208,10 +197,6 @@
       </div>
     </section>
     
-
-
-
-
     <section class="newsletter" id="newsletter">
       <div class="container">
         <div class="newsletter__content">
@@ -238,15 +223,6 @@
         </div>
       </div>
     </section>
-
-  </main> <?php 
-// Chama o arquivo footer.php para fechar a estrutura da página
-get_footer(); 
-?>
-
-
-
-
 
 </main>
 
