@@ -921,6 +921,7 @@ em { font-style: normal; background: var(--grad-primary); -webkit-background-cli
   font-size: 1.8rem;
   flex-shrink: 0;
 }
+
 .article__thumb--html   { background: linear-gradient(135deg, #3d0f00, #6b2200); }
 .article__thumb--css    { background: linear-gradient(135deg, #000d2e, #002080); }
 .article__thumb--js     { background: linear-gradient(135deg, #2e2800, #5e5000); }
@@ -1153,6 +1154,9 @@ em { font-style: normal; background: var(--grad-primary); -webkit-background-cli
 @media (max-width: 900px) {
   .contact__grid { grid-template-columns: 1fr; }
 }
+
+
+
 
 
 
