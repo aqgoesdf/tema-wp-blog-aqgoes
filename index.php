@@ -6,7 +6,8 @@
       <div class="container hero__content">
         <div class="hero__text">
           <span class="hero__tag">🚀 Tecnologia em tempo real</span>
-          
+                    <span class="hero__tag">🚀 Tecnologia em tempo real</span>
+
           <h1 class="hero__title">
             <em><?php bloginfo( 'name' ); ?></em>
           </h1>
@@ -67,6 +68,7 @@
           $query = new WP_Query( $args );
 
           // Contador para identificar qual é o primeiro post (Destaque)
+          // git linux mint
           $contador = 0;
 
           if ( $query->have_posts() ) :
