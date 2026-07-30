@@ -3,6 +3,8 @@
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
     <?php wp_head(); ?>
 </head>
 
@@ -51,7 +53,7 @@
                     <a href="<?php echo is_front_page() ? '#sobre' : esc_url(home_url('/#sobre')); ?>" class="nav-link hover:text-gradient transition-colors block py-2 md:py-0 font-medium">Sobre</a>
                     <a href="<?php echo is_front_page() ? '#trajetoria' : esc_url(home_url('/#trajetoria')); ?>" class="nav-link hover:text-gradient transition-colors block py-2 md:py-0 font-medium">Trajetória</a>
                     <a href="<?php echo is_front_page() ? '#tecnologias' : esc_url(home_url('/#tecnologias')); ?>" class="nav-link hover:text-gradient transition-colors block py-2 md:py-0 font-medium">Tecnologias</a>
-                    <a href="<?php echo esc_url(get_permalink(get_option('page_for_posts')) ?: home_url('/blog')); ?>" class="nav-link hover:text-gradient transition-colors block py-2 md:py-0 font-medium">Artigos</a>
+                    <a href="<?php echo esc_url('https://aqgoes.com/blog/'); ?>" class="nav-link hover:text-gradient transition-colors block py-2 md:py-0 font-medium">Artigos</a>
                 <?php } ?>
 
                 <div class="pt-4 md:pt-0 border-t border-custom md:border-none md:hidden">
