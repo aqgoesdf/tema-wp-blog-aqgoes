@@ -1,53 +1,172 @@
 <?php
-if (!defined('ABSPATH')) {
-    exit; // Saída direta se acessado sem o WordPress
-}
+/**
+ * Configurações e funções do aqgoes Theme
+ *
+ * @package aqgoes
+ */
 
-function aqgoes_theme_setup() {
-    // Suporte a título dinâmico da página (<title>)
-    add_theme_support('title-tag');
+if ( ! function_exists( 'aqgoes_setup' ) ) :
+    function aqgoes_setup() {
+        // Tag <title> dinâmica do WordPress
+        add_theme_support( 'title-tag' );
 
-    // Suporte a Imagens Destacadas (Thumbnails) nos posts/páginas
-    add_theme_support('post-thumbnails');
+        // Imagens Destacadas (Thumbnails)
+        add_theme_support( 'post-thumbnails' );
 
-    // Suporte a logotipo personalizado
-    add_theme_support('custom-logo', array(
-        'height'      => 100,
-        'width'       => 400,
-        'flex-height' => true,
-        'flex-width'  => true,
-    ));
+        // Registro de Menus
+        register_nav_menus( array(
+            'primary' => __( 'Menu Principal', 'aqgoes' ),
+        ) );
 
-    // Registro dos Menus do WordPress
-    register_nav_menus(array(
-        'primary' => __('Menu Principal', 'aqgoes'),
-        'footer'  => __('Menu Rodapé', 'aqgoes'),
-    ));
-}
-add_action('after_setup_theme', 'aqgoes_theme_setup');
+        // Suporte HTML5
+        add_theme_support( 'html5', array(
+            'search-form',
+            'comment-form',
+            'comment-list',
+            'gallery',
+            'caption',
+        ) );
+    }
+endif;
+add_action( 'after_setup_theme', 'aqgoes_setup' );
+
 
 /**
- * Enfileiramento de CSS e JavaScript
+ * Enfileiramento de Estilos e Scripts
  */
-function aqgoes_enqueue_assets() {
-    $theme_version = wp_get_theme()->get('Version');
+function aqgoes_enqueue_scripts() {
 
-    // 1. Tailwind CSS via CDN (Carregado primeiro)
-    wp_enqueue_script('tailwind-cdn', 'https://cdn.tailwindcss.com', array(), null, false);
+    // 1. Google Fonts
+    wp_enqueue_style(
+        'google-fonts-inter-jakarta',
+        'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap',
+        array(),
+        null
+    );
 
-    // 2. Configuração customizada do Tailwind
-    wp_enqueue_script('tailwind-config', get_template_directory_uri() . '/assets/js/tailwind-config.js', array('tailwind-cdn'), $theme_version, false);
+    // 2. Estilo CSS customizado adicional
+    if ( file_exists( get_template_directory() . '/assets/css/style.css' ) ) {
+        wp_enqueue_style( 
+            'aqgoes-main-style', 
+            get_template_directory_uri() . '/assets/css/style.css', 
+            array(), 
+            '1.0.0' 
+        );
+    }
 
-    // 3. Estilo Principal do Tema (main.css)
-    wp_enqueue_style('aqgoes-main-style', get_template_directory_uri() . '/assets/css/main.css', array(), $theme_version);
+    // 3. Estilo Padrão do Tema
+    wp_enqueue_style( 
+        'aqgoes-theme-style', 
+        get_stylesheet_uri(), 
+        array(), 
+        '1.0.0' 
+    );
 
-    // 4. Style.css padrão do WordPress (exigido)
-    wp_enqueue_style('aqgoes-theme-style', get_stylesheet_uri(), array('aqgoes-main-style'), $theme_version);
+    // 4. Tailwind CSS via CDN
+    wp_enqueue_script(
+        'tailwind-cdn',
+        'https://cdn.tailwindcss.com',
+        array(),
+        null,
+        false
+    );
 
-    // 5. JavaScript do Dark Mode
-    wp_enqueue_script('aqgoes-theme-toggle', get_template_directory_uri() . '/assets/js/theme.js', array(), $theme_version, true);
+    // 5. Configuração em linha do Tailwind CSS
+    $tailwind_config = "
+        tailwind.config = {
+          darkMode: 'class',
+          theme: {
+            extend: {
+              colors: {
+                brand: {
+                  DEFAULT: '#2563EB',
+                  hover: '#1D4ED8',
+                }
+              },
+              fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+                title: ['Plus Jakarta Sans', 'sans-serif'],
+              }
+            }
+          }
+        };
+    ";
+    wp_add_inline_script( 'tailwind-cdn', $tailwind_config, 'after' );
 
-    // 6. JavaScript Principal (Menu Hambúrguer / Interações)
-    wp_enqueue_script('aqgoes-main-js', get_template_directory_uri() . '/assets/js/main.js', array(), $theme_version, true);
+    // 6. Script JS Personalizado
+    wp_enqueue_script( 
+        'aqgoes-main-script', 
+        get_template_directory_uri() . '/assets/js/script.js', 
+        array(), 
+        '1.0.0', 
+        true
+    );
 }
-add_action('wp_enqueue_scripts', 'aqgoes_enqueue_assets');
+add_action( 'wp_enqueue_scripts', 'aqgoes_enqueue_scripts' );
+
+
+/**
+ * Preconnect e Otimização para Google Fonts
+ */
+function aqgoes_resource_hints( $urls, $relation_type ) {
+    if ( 'preconnect' === $relation_type ) {
+        $urls[] = array( 'href' => 'https://fonts.googleapis.com' );
+        $urls[] = array( 'href' => 'https://fonts.gstatic.com', 'crossorigin' => 'anonymous' );
+    }
+    return $urls;
+}
+add_filter( 'wp_resource_hints', 'aqgoes_resource_hints', 10, 2 );
+
+
+/**
+ * Renderiza a Paginação Personalizada (Anterior, Página X de Y, Próxima)
+ */
+function aqgoes_custom_pagination( $query = null, $offset_count = 0 ) {
+    global $wp_query;
+
+    $current_query = $query ? $query : $wp_query;
+    $paged         = max( 1, get_query_var( 'paged' ) );
+    
+    $posts_per_page = (int) $current_query->get( 'posts_per_page' );
+    if ( $posts_per_page <= 0 ) {
+        $posts_per_page = (int) get_option( 'posts_per_page' );
+    }
+
+    $total_posts   = max( 0, (int) $current_query->found_posts - (int) $offset_count );
+    $max_num_pages = ( $posts_per_page > 0 ) ? ceil( $total_posts / $posts_per_page ) : 1;
+
+    if ( $max_num_pages <= 1 ) {
+        return;
+    }
+    ?>
+
+    <div class="mt-12 flex justify-center items-center gap-2">
+      <?php if ( $paged > 1 ) : ?>
+        <a href="<?php echo esc_url( get_pagenum_link( $paged - 1 ) ); ?>" 
+           class="p-2.5 rounded-xl border border-subtle bg-secondary hover:border-brand text-xs font-semibold transition-all">
+          Anterior
+        </a>
+      <?php else : ?>
+        <button disabled class="p-2.5 rounded-xl border border-subtle bg-secondary text-xs font-semibold opacity-50 cursor-not-allowed">
+          Anterior
+        </button>
+      <?php endif; ?>
+
+      <span class="px-4 py-2 text-xs font-semibold">
+        Página <?php echo $paged; ?> de <?php echo $max_num_pages; ?>
+      </span>
+
+      <?php if ( $paged < $max_num_pages ) : ?>
+        <a href="<?php echo esc_url( get_pagenum_link( $paged + 1 ) ); ?>" 
+           class="p-2.5 rounded-xl border border-subtle bg-secondary hover:border-brand text-xs font-semibold transition-all">
+          Próxima
+        </a>
+      <?php else : ?>
+        <button disabled class="p-2.5 rounded-xl border border-subtle bg-secondary text-xs font-semibold opacity-50 cursor-not-allowed">
+          Próxima
+        </button>
+      <?php endif; ?>
+    </div>
+
+    <?php
+}

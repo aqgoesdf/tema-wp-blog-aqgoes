@@ -1,0 +1,54 @@
+/* Custom CSS Variables para Controle Refinado de Tema */
+:root {
+  /* Modo Claro Default */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8FAFC; /* Slate 50 */
+  --bg-header: rgba(255, 255, 255, 0.8);
+  --text-primary: #334155; /* Slate 700 */
+  --text-muted: #64748B; /* Slate 500 */
+  --border-subtle: #E2E8F0; /* Slate 200 */
+}
+
+.dark {
+  /* Modo Escuro Elegante */
+  --bg-primary: #0F172A; /* Slate 900 */
+  --bg-secondary: #1E293B; /* Slate 800 */
+  --bg-header: rgba(15, 23, 42, 0.8);
+  --text-primary: #F8FAFC; /* Slate 50 */
+  --text-muted: #94A3B8; /* Slate 400 */
+  --border-subtle: #334155; /* Slate 700 */
+}
+
+/* Classes utilitárias mapeadas para as variáveis CSS */
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-header {
+  background-color: var(--bg-header);
+}
+
+.bg-subtle {
+  background-color: var(--border-subtle);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.border-subtle {
+  border-color: var(--border-subtle);
+}
+
+/* Smooth Transitions para Troca de Tema */
+body, header, footer, article, button, input {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}

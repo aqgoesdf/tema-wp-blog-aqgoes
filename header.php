@@ -1,78 +1,100 @@
 <!DOCTYPE html>
-<html <?php language_attributes(); ?> class="dark">
+<html <?php language_attributes(); ?> class="scroll-smooth">
 <head>
-    <meta charset="<?php bloginfo('charset'); ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-      <meta name="google-site-verification" content="eTrlbtdq7bsM5xHgk9osh2-i7MqqCQRutgQ4kyutYys" />
-    <?php wp_head(); ?>
+  <meta charset="<?php bloginfo( 'charset' ); ?>" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <?php wp_head(); ?>
 </head>
-
-<body <?php body_class('bg-bg text-text-primary font-sans antialiased scroll-smooth transition-colors duration-300'); ?>>
+<body <?php body_class('bg-primary text-primary font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col'); ?>>
 <?php wp_body_open(); ?>
 
-    <!-- HEADER -->
-    <header class="sticky top-0 z-50 header-backdrop backdrop-blur-md border-b border-custom transition-colors duration-300">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center relative">
-            
-            <!-- Logo -->
-            <a href="<?php echo esc_url(home_url('/')); ?>" class="text-2xl font-bold tracking-wider text-gradient z-20">
-                <?php bloginfo('name'); ?>
-            </a>
+  <!-- HEADER FIXO -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-header border-b border-subtle backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Logo -->
+      <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="font-title font-extrabold text-2xl tracking-tight text-accent flex items-center gap-2">
+        <span class="w-3 h-3 rounded-full bg-brand inline-block"></span>
+        AqGoEs DeV<span class="text-brand">.</span>
+      </a>
 
-            <!-- Ações Mobile (Dark Mode + Hambúrguer) -->
-            <div class="flex items-center gap-2 z-20 md:hidden">
-                <button class="theme-toggle p-2 rounded-lg border border-custom text-text-primary hover:bg-bg-card transition-colors" aria-label="Alternar Tema">
-                    <span class="icon-moon text-lg">🌙</span>
-                    <span class="icon-sun text-lg hidden">☀️</span>
-                </button>
+      <!-- Menu Desktop -->
+      <nav class="hidden md:flex items-center gap-8">
+        <?php
+        if ( has_nav_menu( 'primary' ) ) {
+            wp_nav_menu( array(
+                'theme_location' => 'primary',
+                'container'      => false,
+                'menu_class'     => 'hidden md:flex items-center gap-8 text-sm font-medium hover:text-brand transition-colors',
+                'fallback_cb'    => false,
+            ) );
+        } else {
+            ?>
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="text-sm font-medium hover:text-brand transition-colors">Home</a>
+            <a href="<?php echo esc_url( home_url( '/sobre' ) ); ?>" class="text-sm font-medium hover:text-brand transition-colors">Sobre</a>
+            <a href="<?php echo esc_url( home_url( '/blog' ) ); ?>" class="text-sm font-medium hover:text-brand transition-colors">Artigos</a>
+            <a href="<?php echo esc_url( home_url( '/contato' ) ); ?>" class="text-sm font-medium hover:text-brand transition-colors">Contato</a>
+            <?php
+        }
+        ?>
+      </nav>
 
-                <button id="menu-btn" aria-label="Abrir Menu" aria-expanded="false" class="text-text-primary hover:text-white focus:outline-none p-2">
-                    <svg id="icon-open" class="w-7 h-7 block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                    <svg id="icon-close" class="w-7 h-7 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
+      <!-- Botões de Ação + Campo de Pesquisa -->
+      <div class="flex items-center gap-3 sm:gap-4">
+        
+        <!-- CAMPO DE PESQUISA (Entre o menu e o botão dark/light) -->
+        <form role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>" class="relative flex items-center">
+          <input 
+            type="search" 
+            name="s" 
+            value="<?php echo get_search_query(); ?>" 
+            placeholder="Buscar..." 
+            required
+            class="w-32 sm:w-48 pl-9 pr-3 py-1.5 text-xs rounded-full border border-subtle bg-secondary text-primary placeholder-muted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all duration-300"
+          />
+          <button type="submit" aria-label="Pesquisar" class="absolute left-3 text-muted hover:text-brand transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </form>
 
-            <!-- Navegação Desktop & Mobile Dropdown -->
-            <nav id="menu" class="hidden absolute top-full left-0 w-full menu-backdrop backdrop-blur-lg border-b border-custom p-6 flex-col space-y-4 md:static md:flex md:flex-row md:items-center md:space-y-0 md:space-x-8 md:w-auto md:bg-transparent md:border-none md:p-0 transition-all duration-300 z-10">
-                <?php
-                if (has_nav_menu('primary')) {
-                    wp_nav_menu(array(
-                        'theme_location' => 'primary',
-                        'container'      => false,
-                        'menu_class'     => 'flex flex-col md:flex-row md:items-center md:space-x-8 space-y-4 md:space-y-0',
-                        'fallback_cb'    => false
-                    ));
-                } else {
-                    // Menu Padrão Fallback com links para as âncoras da home e blog
-                ?>
-                    <a href="<?php echo is_front_page() ? '#sobre' : esc_url(home_url('/#sobre')); ?>" class="nav-link hover:text-gradient transition-colors block py-2 md:py-0 font-medium">Sobre</a>
-                    <a href="<?php echo is_front_page() ? '#trajetoria' : esc_url(home_url('/#trajetoria')); ?>" class="nav-link hover:text-gradient transition-colors block py-2 md:py-0 font-medium">Trajetória</a>
-                    <a href="<?php echo is_front_page() ? '#tecnologias' : esc_url(home_url('/#tecnologias')); ?>" class="nav-link hover:text-gradient transition-colors block py-2 md:py-0 font-medium">Tecnologias</a>
-                    <a href="<?php echo esc_url('https://aqgoes.com/blog/'); ?>" class="nav-link hover:text-gradient transition-colors block py-2 md:py-0 font-medium">Artigos</a>
-                <?php } ?>
+        <!-- Botão Dark/Light Mode -->
+        <button id="theme-toggle" aria-label="Alternar tema" class="p-2.5 rounded-full border border-subtle bg-secondary hover:bg-subtle transition-all duration-300 text-primary flex-shrink-0">
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
 
-                <div class="pt-4 md:pt-0 border-t border-custom md:border-none md:hidden">
-                    <a href="https://wa.me/5561999999999" target="_blank" rel="noopener noreferrer" class="block text-center bg-grad-primary text-white font-semibold px-4 py-2 rounded-lg hover:opacity-90 transition-opacity">
-                        Fale Comigo
-                    </a>
-                </div>
-            </nav>
+        <button id="menu-toggle" aria-label="Abrir menu" class="md:hidden p-2.5 rounded-xl border border-subtle bg-secondary text-primary flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
 
-            <!-- Ações Desktop (Dark Mode + Botão WhatsApp) -->
-            <div class="hidden md:flex items-center space-x-4">
-                <button class="theme-toggle p-2 rounded-lg border border-custom text-text-primary hover:bg-bg-card transition-colors cursor-pointer" aria-label="Alternar Tema">
-                    <span class="icon-moon text-lg">🌙</span>
-                    <span class="icon-sun text-lg hidden">☀️</span>
-                </button>
-                <a href="https://wa.me/5561999999999" target="_blank" rel="noopener noreferrer" class="bg-grad-primary text-white font-semibold px-4 py-2 rounded-lg hover:opacity-90 transition-opacity">
-                    Fale Comigo
-                </a>
-            </div>
-
-        </div>
-    </header>
+    <!-- Dropdown Mobile -->
+    <div id="mobile-menu" class="hidden md:hidden border-b border-subtle bg-secondary px-4 pt-2 pb-6 space-y-3">
+      <?php
+      if ( has_nav_menu( 'primary' ) ) {
+          wp_nav_menu( array(
+              'theme_location' => 'primary',
+              'container'      => false,
+              'menu_class'     => 'space-y-3',
+              'fallback_cb'    => false,
+          ) );
+      } else {
+          ?>
+          <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="block text-base font-medium hover:text-brand py-2">Home</a>
+          <a href="<?php echo esc_url( home_url( '/sobre' ) ); ?>" class="block text-base font-medium hover:text-brand py-2">Sobre</a>
+          <a href="<?php echo esc_url( home_url( '/artigos' ) ); ?>" class="block text-base font-medium hover:text-brand py-2">Artigos</a>
+          <a href="<?php echo esc_url( home_url( '/contato' ) ); ?>" class="block text-base font-medium hover:text-brand py-2">Contato</a>
+          <?php
+      }
+      ?>
+    </div>
+  </header>
