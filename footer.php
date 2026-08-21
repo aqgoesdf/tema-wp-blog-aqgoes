@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-muted">
       
       <div class="flex items-center gap-2">
-        <span class="font-title font-bold text-base text-primary">DevBlog.</span>
+        <span class="font-title font-bold text-base text-primary">AqGoEs | Dev.</span>
         <span>© <?php echo date('Y'); ?> Todos os direitos reservados.</span>
       </div>
 
