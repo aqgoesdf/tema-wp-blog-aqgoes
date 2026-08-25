@@ -9,8 +9,8 @@
 
       <div class="flex gap-6">
         <a href="<?php the_permalink('https://aqgoes.com/'); ?>" class="hover:text-brand transition-colors">Portfólio</a>
-        <a href="https://github.com" target="_blank" rel="noopener" class="hover:text-brand transition-colors">GitHub</a>
-        <a href="https://linkedin.com" target="_blank" rel="noopener" class="hover:text-brand transition-colors">LinkedIn</a>
+        <a href="https://github.com/aqgoesdf" target="_blank" rel="noopener" class="hover:text-brand transition-colors">GitHub</a>
+        <a href="https://www.linkedin.com/in/alan-queir%C3%B3s-de-goes-8989b533/" target="_blank" rel="noopener" class="hover:text-brand transition-colors">LinkedIn</a>
         <a href="#" class="hover:text-brand transition-colors">Privacidade</a>
       </div>
     </div>

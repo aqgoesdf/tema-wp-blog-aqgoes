@@ -11,25 +11,20 @@ get_header(); ?>
   <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
 
     <?php
-    // Categoria Principal
     $categories       = get_the_category();
     $primary_category = ! empty( $categories ) ? $categories[0]->name : 'Geral';
     $primary_cat_link = ! empty( $categories ) ? get_category_link( $categories[0]->term_id ) : '#';
 
-    // Datas
     $published_date   = get_the_date( 'd/m/Y' );
     $modified_date    = get_the_modified_date( 'd/m/Y' );
     $has_been_updated = ( get_the_modified_date( 'U' ) > get_the_date( 'U' ) );
 
-    // Tempo de Leitura
     $word_count   = str_word_count( wp_strip_all_tags( get_the_content() ) );
     $reading_time = ceil( $word_count / 200 );
 
-    // URLs de Compartilhamento
     $current_url   = urlencode( get_permalink() );
     $current_title = urlencode( get_the_title() );
 
-    // Bio do Autor
     $author_bio = get_the_author_meta( 'description' );
     ?>
 
@@ -95,11 +90,93 @@ get_header(); ?>
         </div>
       </div>
 
-      <!-- CORPO COM SIDEBAR LATERAL -->
+      <!-- CORPO DO ARTIGO -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
-        <!-- CONTEÚDO PRINCIPAL (8 COLUNAS) -->
-        <div class="lg:col-span-8 space-y-8">
+        <!-- SIDEBAR (NAVEGUE POR TÓPICOS PRIMEIRO NO MOBILE, À DIREITA NO DESKTOP) -->
+        <aside class="lg:col-span-4 order-first lg:order-last space-y-6">
+
+          <!-- WIDGET 1: NAVEGUE POR TÓPICOS (FIXO NO DESKTOP) -->
+          <div id="toc-container" class="sticky top-28 z-20 p-6 rounded-3xl border border-subtle bg-secondary shadow-xl space-y-3">
+            <h4 class="font-title font-bold text-base text-primary border-b border-subtle pb-3 flex items-center gap-2">
+              <span class="text-brand">📌</span> Navegue por tópicos
+            </h4>
+            <nav id="table-of-contents" class="flex flex-col space-y-1 text-sm text-muted max-h-[35vh] sm:max-h-[50vh] overflow-y-auto pr-2">
+              <p class="text-xs opacity-75">Carregando tópicos...</p>
+            </nav>
+          </div>
+
+          <!-- WIDGETS SECUNDÁRIOS DA SIDEBAR (OCULTOS NO MOBILE SE PREFERIR, OU EXIBIDOS ABAIXO DO TEXTO NO DESKTOP) -->
+          <div class="hidden lg:block space-y-6">
+
+            <!-- WIDGET 2: SOBRE O AUTOR -->
+            <div class="p-6 rounded-3xl border border-subtle bg-secondary shadow-xl space-y-4">
+              <h4 class="font-title font-bold text-base text-primary border-b border-subtle pb-3">Sobre o Autor</h4>
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl overflow-hidden border border-brand/30 bg-subtle flex-shrink-0">
+                  <?php echo get_avatar( get_the_author_meta( 'ID' ), 128, '', get_the_author(), array( 'class' => 'w-full h-full object-cover' ) ); ?>
+                </div>
+                <div>
+                  <h5 class="font-title font-bold text-sm text-primary"><?php the_author(); ?></h5>
+                  <p class="text-xs text-muted mt-1"><?php echo esc_html( $author_bio ? $author_bio : 'Desenvolvedor e produtor de conteúdo técnico.' ); ?></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- WIDGET 3: ARTIGOS RELACIONADOS -->
+            <div class="p-6 rounded-3xl border border-subtle bg-secondary shadow-xl space-y-4">
+              <h4 class="font-title font-bold text-base text-primary border-b border-subtle pb-3">Artigos Relacionados</h4>
+              <div class="space-y-4">
+                <?php
+                $related_query = new WP_Query( array(
+                    'post_type'      => 'post',
+                    'posts_per_page' => 3,
+                    'post__not_in'   => array( get_the_ID() ),
+                    'category__in'   => wp_get_post_categories( get_the_ID() ),
+                ) );
+
+                if ( $related_query->have_posts() ) :
+                  while ( $related_query->have_posts() ) : $related_query->the_post();
+                ?>
+                    <article class="flex items-center gap-3 group">
+                      <a href="<?php the_permalink(); ?>" class="w-16 h-16 rounded-xl overflow-hidden bg-subtle flex-shrink-0 block">
+                        <?php if ( has_post_thumbnail() ) : ?>
+                          <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'w-full h-full object-cover transition-transform duration-300 group-hover:scale-105' ) ); ?>
+                        <?php else : ?>
+                          <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=150&q=80" class="w-full h-full object-cover" alt="<?php the_title_attribute(); ?>"/>
+                        <?php endif; ?>
+                      </a>
+                      <div>
+                        <h6 class="font-title text-xs font-bold text-primary group-hover:text-brand transition-colors line-clamp-2">
+                          <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                        </h6>
+                        <span class="text-[10px] text-muted mt-1 block"><?php echo esc_html( get_the_date( 'd/m/Y' ) ); ?></span>
+                      </div>
+                    </article>
+                <?php
+                  endwhile;
+                  wp_reset_postdata();
+                endif;
+                ?>
+              </div>
+            </div>
+
+            <!-- WIDGET 4: NEWSLETTER -->
+            <div class="p-6 rounded-3xl bg-brand text-white shadow-2xl space-y-3">
+              <h4 class="font-title font-extrabold text-lg">Receba novos tutoriais</h4>
+              <p class="text-xs text-white/80">Junte-se à nossa lista de e-mails para conteúdos técnicos.</p>
+              <form class="space-y-2" onsubmit="event.preventDefault();">
+                <input type="email" placeholder="Seu melhor e-mail" required class="w-full px-4 py-2.5 rounded-xl text-xs text-slate-800 bg-white border-0 focus:outline-none" />
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-xs hover:bg-slate-800 transition-all">Inscrever-se</button>
+              </form>
+            </div>
+
+          </div>
+
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL DO ARTIGO (SEGUNDO NO MOBILE, À ESQUERDA NO DESKTOP) -->
+        <div class="lg:col-span-8 order-last lg:order-first space-y-8">
           <?php if ( has_excerpt() ) : ?>
             <div class="p-6 rounded-2xl bg-secondary border-l-4 border-brand italic text-lg text-primary/90 leading-relaxed">
               <?php echo esc_html( get_the_excerpt() ); ?>
@@ -110,83 +187,6 @@ get_header(); ?>
             <?php the_content(); ?>
           </div>
         </div>
-
-        <!-- SIDEBAR PROFISSIONAL LATERAL (4 COLUNAS) -->
-        <aside class="lg:col-span-4 space-y-6">
-
-          <!-- WIDGET 1: NAVEGUE POR TÓPICOS (ÚNICO BLOCO FIXO COM STICKY TOP-28) -->
-          <div id="toc-container" class="sticky top-28 z-20 p-6 rounded-3xl border border-subtle bg-secondary shadow-xl space-y-3">
-            <h4 class="font-title font-bold text-base text-primary border-b border-subtle pb-3 flex items-center gap-2">
-              <span class="text-brand">📌</span> Navegue por tópicos
-            </h4>
-            <nav id="table-of-contents" class="flex flex-col space-y-1 text-sm text-muted max-h-[50vh] overflow-y-auto pr-2">
-              <p class="text-xs opacity-75">Carregando tópicos...</p>
-            </nav>
-          </div>
-
-          <!-- WIDGET 2: SOBRE O AUTOR (ROLA NORMALMENTE) -->
-          <div class="p-6 rounded-3xl border border-subtle bg-secondary shadow-xl space-y-4">
-            <h4 class="font-title font-bold text-base text-primary border-b border-subtle pb-3">Sobre o Autor</h4>
-            <div class="flex items-center gap-4">
-              <div class="w-14 h-14 rounded-2xl overflow-hidden border border-brand/30 bg-subtle flex-shrink-0">
-                <?php echo get_avatar( get_the_author_meta( 'ID' ), 128, '', get_the_author(), array( 'class' => 'w-full h-full object-cover' ) ); ?>
-              </div>
-              <div>
-                <h5 class="font-title font-bold text-sm text-primary"><?php the_author(); ?></h5>
-                <p class="text-xs text-muted mt-1"><?php echo esc_html( $author_bio ? $author_bio : 'Desenvolvedor e produtor de conteúdo técnico.' ); ?></p>
-              </div>
-            </div>
-          </div>
-
-          <!-- WIDGET 3: ARTIGOS RELACIONADOS (ROLA NORMALMENTE) -->
-          <div class="p-6 rounded-3xl border border-subtle bg-secondary shadow-xl space-y-4">
-            <h4 class="font-title font-bold text-base text-primary border-b border-subtle pb-3">Artigos Relacionados</h4>
-            <div class="space-y-4">
-              <?php
-              $related_query = new WP_Query( array(
-                  'post_type'      => 'post',
-                  'posts_per_page' => 3,
-                  'post__not_in'   => array( get_the_ID() ),
-                  'category__in'   => wp_get_post_categories( get_the_ID() ),
-              ) );
-
-              if ( $related_query->have_posts() ) :
-                while ( $related_query->have_posts() ) : $related_query->the_post();
-              ?>
-                  <article class="flex items-center gap-3 group">
-                    <a href="<?php the_permalink(); ?>" class="w-16 h-16 rounded-xl overflow-hidden bg-subtle flex-shrink-0 block">
-                      <?php if ( has_post_thumbnail() ) : ?>
-                        <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'w-full h-full object-cover transition-transform duration-300 group-hover:scale-105' ) ); ?>
-                      <?php else : ?>
-                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=150&q=80" class="w-full h-full object-cover" alt="<?php the_title_attribute(); ?>"/>
-                      <?php endif; ?>
-                    </a>
-                    <div>
-                      <h6 class="font-title text-xs font-bold text-primary group-hover:text-brand transition-colors line-clamp-2">
-                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                      </h6>
-                      <span class="text-[10px] text-muted mt-1 block"><?php echo esc_html( get_the_date( 'd/m/Y' ) ); ?></span>
-                    </div>
-                  </article>
-              <?php
-                endwhile;
-                wp_reset_postdata();
-              endif;
-              ?>
-            </div>
-          </div>
-
-          <!-- WIDGET 4: NEWSLETTER (ROLA NORMALMENTE) -->
-          <div class="p-6 rounded-3xl bg-brand text-white shadow-2xl space-y-3">
-            <h4 class="font-title font-extrabold text-lg">Receba novos tutoriais</h4>
-            <p class="text-xs text-white/80">Junte-se à nossa lista de e-mails para conteúdos técnicos.</p>
-            <form class="space-y-2" onsubmit="event.preventDefault();">
-              <input type="email" placeholder="Seu melhor e-mail" required class="w-full px-4 py-2.5 rounded-xl text-xs text-slate-800 bg-white border-0 focus:outline-none" />
-              <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-xs hover:bg-slate-800 transition-all">Inscrever-se</button>
-            </form>
-          </div>
-
-        </aside>
 
       </div>
 

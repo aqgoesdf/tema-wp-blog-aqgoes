@@ -1,54 +1,142 @@
-/* Custom CSS Variables para Controle Refinado de Tema */
+/* ==========================================================================
+   AQGOES THEME - CSS CONSOLIDADO E OTIMIZADO
+   ========================================================================== */
+
+/* ── 1. VARIÁVEIS DO SISTEMA DE TEMA (TOKENS) ── */
 :root {
-  /* Modo Claro Default */
-  --bg-primary: #FFFFFF;
-  --bg-secondary: #F8FAFC; /* Slate 50 */
-  --bg-header: rgba(255, 255, 255, 0.8);
-  --text-primary: #334155; /* Slate 700 */
-  --text-muted: #64748B; /* Slate 500 */
-  --border-subtle: #E2E8F0; /* Slate 200 */
+  /* Modo Claro (Padrão) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-subtle: #f1f5f9;
+  --bg-header: rgba(255, 255, 255, 0.85);
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+  --border-subtle: #e2e8f0;
+  --brand-color: #2563eb;
+  --grad-primary: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #60a5fa 100%);
 }
 
 .dark {
-  /* Modo Escuro Elegante */
-  --bg-primary: #0F172A; /* Slate 900 */
-  --bg-secondary: #1E293B; /* Slate 800 */
-  --bg-header: rgba(15, 23, 42, 0.8);
-  --text-primary: #F8FAFC; /* Slate 50 */
-  --text-muted: #94A3B8; /* Slate 400 */
-  --border-subtle: #334155; /* Slate 700 */
+  /* Modo Escuro */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: #1e293b;
+  --bg-subtle: #334155;
+  --bg-header: rgba(15, 23, 42, 0.85);
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-subtle: #334155;
+  --brand-color: #3b82f6;
+  --grad-primary: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
 }
 
-/* Classes utilitárias mapeadas para as variáveis CSS */
-.bg-primary {
-  background-color: var(--bg-primary);
+/* ── 2. CLASSES UTILITÁRIAS DE MAPEAMENTO ── */
+.bg-primary { background-color: var(--bg-primary); }
+.bg-secondary { background-color: var(--bg-secondary); }
+.bg-card { background-color: var(--bg-card); }
+.bg-subtle { background-color: var(--bg-subtle); }
+.bg-header { background-color: var(--bg-header); }
+
+.text-primary { color: var(--text-primary); }
+.text-muted { color: var(--text-muted); }
+
+.border-subtle, .border-custom { border-color: var(--border-subtle); }
+
+.text-gradient {
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.bg-secondary {
-  background-color: var(--bg-secondary);
+/* Transição suave ao alternar de tema */
+body, header, footer, article, button, input, aside {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+/* ── 3. SCROLLBAR CUSTOMIZADA ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--brand-color); border-radius: 3px; }
+
+/* ── 4. ESTILIZAÇÃO DO CONTEÚDO DOS ARTIGOS (#post-content) ── */
+#post-content p {
+  margin-bottom: 1.25rem;
+  line-height: 1.75;
 }
 
-.bg-header {
-  background-color: var(--bg-header);
-}
-
-.bg-subtle {
-  background-color: var(--border-subtle);
-}
-
-.text-primary {
+#post-content h1, 
+#post-content h2, 
+#post-content h3, 
+#post-content h4 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
   color: var(--text-primary);
 }
 
-.text-muted {
+#post-content h2 { font-size: 1.75rem; }
+#post-content h3 { font-size: 1.35rem; }
+
+/* Listas com marcação (Bolinhas e Números) */
+#post-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+#post-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+#post-content li {
+  margin-bottom: 0.5rem;
+}
+
+/* Links e Citações */
+#post-content a {
+  color: var(--brand-color);
+  text-decoration: underline;
+}
+
+#post-content blockquote {
+  border-left-width: 4px;
+  border-color: var(--brand-color);
+  padding-left: 1rem;
+  font-style: italic;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── 5. COMPONENTES ADICIONAIS DE NAVEGAÇÃO ── */
+.cat-btn {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  border-radius: 99px;
+  border: 1.5px solid var(--border-subtle);
+  background: var(--bg-secondary);
   color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.border-subtle {
-  border-color: var(--border-subtle);
+.cat-btn:hover, .cat-btn.active {
+  border-color: var(--brand-color);
+  background: var(--brand-color);
+  color: #ffffff;
 }
 
-/* Smooth Transitions para Troca de Tema */
-body, header, footer, article, button, input {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+.tag-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.6rem;
+  border-radius: 3px;
+  background: var(--brand-color);
+  color: #ffffff;
+  display: inline-block;
 }
