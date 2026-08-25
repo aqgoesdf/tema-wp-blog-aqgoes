@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Principal da Página Inicial "Index"
+ * Template Principal da Página Inicial
  *
  * @package aqgoes
  */

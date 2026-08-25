@@ -1,6 +1,6 @@
 <?php
 /**
- * Template do Artigo
+ * Template do Artigo Individual
  *
  * @package aqgoes
  */
