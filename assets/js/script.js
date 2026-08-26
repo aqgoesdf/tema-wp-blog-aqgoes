@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (lightIcon) lightIcon.classList.toggle('hidden', !isDark);
     }
 
-    // Carrega a preferência salva ou do sistema
     const savedTheme = localStorage.getItem('color-theme') || localStorage.getItem('theme');
     const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const initialDark = savedTheme ? savedTheme === 'dark' : systemDark;
@@ -108,5 +107,40 @@ document.addEventListener('DOMContentLoaded', () => {
             if (mobileToc) mobileToc.style.display = 'none';
             if (desktopToc) desktopToc.style.display = 'none';
         }
+    }
+
+    /* ── 4. BARRA DE PROGRESSO DE LEITURA E BOTÃO VOLTAR AO TOPO ── */
+    const progressBar = document.getElementById('reading-progress-bar');
+    const backToTopBtn = document.getElementById('back-to-top');
+
+    window.addEventListener('scroll', () => {
+        const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        
+        // Atualiza barra de progresso
+        if (progressBar && height > 0) {
+            const scrolled = (winScroll / height) * 100;
+            progressBar.style.width = scrolled + '%';
+        }
+
+        // Mostra/oculta botão voltar ao topo
+        if (backToTopBtn) {
+            if (winScroll > 400) {
+                backToTopBtn.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+                backToTopBtn.classList.add('opacity-100', 'translate-y-0');
+            } else {
+                backToTopBtn.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+                backToTopBtn.classList.remove('opacity-100', 'translate-y-0');
+            }
+        }
+    });
+
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
     }
 });
