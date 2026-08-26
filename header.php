@@ -91,7 +91,7 @@
           ?>
           <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="block text-base font-medium hover:text-brand py-2">Home</a>
           <a href="<?php echo esc_url( home_url( '/sobre' ) ); ?>" class="block text-base font-medium hover:text-brand py-2">Sobre</a>
-          <a href="<?php echo esc_url( home_url( '/artigos' ) ); ?>" class="block text-base font-medium hover:text-brand py-2">Artigos</a>
+          <a href="<?php echo esc_url( home_url( '/blog' ) ); ?>" class="block text-base font-medium hover:text-brand py-2">Artigos</a>
           <a href="<?php echo esc_url( home_url( '/contato' ) ); ?>" class="block text-base font-medium hover:text-brand py-2">Contato</a>
           <?php
       }
