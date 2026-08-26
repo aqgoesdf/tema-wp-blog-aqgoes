@@ -1,164 +1,112 @@
-document.addEventListener('DOMContentLoaded', function () {
-	'use strict';
+/* ==========================================================================
+   AQGOES THEME - SCRIPT UNIFICADO E OTIMIZADO
+   ========================================================================== */
 
-	/* ═══════════════════════════
-	   1. DARK / LIGHT MODE
-	   Chave única no localStorage: "theme"
-	═══════════════════════════ */
-	var themeToggleBtn = document.getElementById('theme-toggle');
-	var darkIcon = document.getElementById('theme-toggle-dark-icon');
-	var lightIcon = document.getElementById('theme-toggle-light-icon');
+document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
 
-	function applyTheme(isDark) {
-		document.documentElement.classList.toggle('dark', isDark);
-		if (darkIcon) darkIcon.classList.toggle('hidden', isDark);
-		if (lightIcon) lightIcon.classList.toggle('hidden', !isDark);
-	}
+    /* ── 1. DARK MODE (RESTAURADO AO MODELO ORIGINAL) ── */
+    const htmlElement = document.documentElement;
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const darkIcon = document.getElementById('theme-toggle-dark-icon');
+    const lightIcon = document.getElementById('theme-toggle-light-icon');
 
-	if (themeToggleBtn) {
-		var savedTheme = localStorage.getItem('theme');
-		var isDark = savedTheme
-			? savedTheme === 'dark'
-			: window.matchMedia('(prefers-color-scheme: dark)').matches;
+    function applyTheme(isDark) {
+        if (isDark) {
+            htmlElement.classList.add('dark');
+            htmlElement.classList.remove('light');
+        } else {
+            htmlElement.classList.remove('dark');
+            htmlElement.classList.add('light');
+        }
+        if (darkIcon) darkIcon.classList.toggle('hidden', isDark);
+        if (lightIcon) lightIcon.classList.toggle('hidden', !isDark);
+    }
 
-		applyTheme(isDark);
+    // Carrega a preferência salva ou do sistema
+    const savedTheme = localStorage.getItem('color-theme') || localStorage.getItem('theme');
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialDark = savedTheme ? savedTheme === 'dark' : systemDark;
+    
+    applyTheme(initialDark);
 
-		themeToggleBtn.addEventListener('click', function () {
-			var newIsDark = !document.documentElement.classList.contains('dark');
-			applyTheme(newIsDark);
-			localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
-		});
-	}
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const isDark = !htmlElement.classList.contains('dark');
+            applyTheme(isDark);
+            localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+    }
 
-	/* ═══════════════════════════
-	   2. MENU MOBILE
-	═══════════════════════════ */
-	var menuToggleBtn = document.getElementById('menu-toggle');
-	var mobileMenu = document.getElementById('mobile-menu');
+    /* ── 2. MENU HAMBÚRGUER RESPONSIVO ── */
+    const menuToggleBtn = document.getElementById('menu-toggle') || document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu') || document.getElementById('menu');
 
-	if (menuToggleBtn && mobileMenu) {
-		menuToggleBtn.addEventListener('click', function () {
-			mobileMenu.classList.toggle('hidden');
-		});
+    if (menuToggleBtn && mobileMenu) {
+        menuToggleBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
 
-		mobileMenu.querySelectorAll('a').forEach(function (link) {
-			link.addEventListener('click', function () {
-				mobileMenu.classList.add('hidden');
-			});
-		});
-	}
+    /* ── 3. 📌 NAVEGUE POR TÓPICOS (H2, H3 E H4) ── */
+    const postContent = document.getElementById('post-content');
+    const tocTargets = document.querySelectorAll('.table-of-contents-target, #table-of-contents');
 
-	/* ═══════════════════════════
-	   3. CARROSSEL (template-artigos.php)
-	═══════════════════════════ */
-	var track = document.getElementById('carousel-track');
-	var prevBtn = document.getElementById('carousel-prev');
-	var nextBtn = document.getElementById('carousel-next');
-	var dotsContainer = document.getElementById('carousel-dots');
+    if (postContent && tocTargets.length > 0) {
+        const headings = postContent.querySelectorAll('h2, h3, h4');
 
-	if (track) {
-		var slides = Array.prototype.slice.call(track.children);
-		var dots = dotsContainer ? Array.prototype.slice.call(dotsContainer.children) : [];
-		var currentIndex = 0;
+        if (headings.length > 0) {
+            tocTargets.forEach(target => target.innerHTML = '');
 
-		function updateCarousel(index) {
-			currentIndex = index;
-			track.style.transform = 'translateX(-' + (index * 100) + '%)';
-			dots.forEach(function (dot, i) {
-				dot.classList.toggle('bg-brand', i === index);
-				dot.classList.toggle('bg-subtle', i !== index);
-			});
-		}
+            headings.forEach((heading, index) => {
+                if (!heading.id) {
+                    const slug = heading.innerText
+                        .toLowerCase()
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .replace(/[^a-z0-9 -]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-');
 
-		if (nextBtn) {
-			nextBtn.addEventListener('click', function () {
-				updateCarousel((currentIndex + 1) % slides.length);
-			});
-		}
-		if (prevBtn) {
-			prevBtn.addEventListener('click', function () {
-				updateCarousel((currentIndex - 1 + slides.length) % slides.length);
-			});
-		}
-		dots.forEach(function (dot, index) {
-			dot.addEventListener('click', function () { updateCarousel(index); });
-		});
-	}
+                    heading.id = slug || `topico-${index}`;
+                }
 
-	/* ═══════════════════════════
-	   4. COPIAR CÓDIGO (blocos de código nos posts)
-	═══════════════════════════ */
-	document.querySelectorAll('.copy-code-btn').forEach(function (button) {
-		button.addEventListener('click', function () {
-			var group = button.closest('.group');
-			var codeBlock = group ? group.querySelector('code') : null;
-			if (!codeBlock) return;
+                heading.classList.add('scroll-mt-28');
 
-			navigator.clipboard.writeText(codeBlock.innerText).then(function () {
-				var span = button.querySelector('span');
-				var originalText = span ? span.textContent : '';
-				if (span) span.textContent = 'Copiado!';
-				button.classList.add('bg-emerald-600', 'text-white');
+                tocTargets.forEach(target => {
+                    const link = document.createElement('a');
+                    link.href = '#' + heading.id;
+                    link.className = 'hover:text-brand transition-colors text-xs font-semibold py-1.5 flex items-center gap-2 border-b border-subtle/30 sm:border-0';
 
-				setTimeout(function () {
-					if (span) span.textContent = originalText;
-					button.classList.remove('bg-emerald-600', 'text-white');
-				}, 2000);
-			}).catch(function (err) {
-				console.error('Erro ao copiar código:', err);
-			});
-		});
-	});
+                    const tagLower = heading.tagName.toLowerCase();
+                    if (tagLower === 'h3') {
+                        link.classList.add('pl-3', 'opacity-85');
+                    } else if (tagLower === 'h4') {
+                        link.classList.add('pl-6', 'opacity-70');
+                    }
 
-	/* ═══════════════════════════
-	   5. SUMÁRIO (TOC) do post
-	═══════════════════════════ */
-	var postContent = document.getElementById('post-content');
-	var tocNav = document.getElementById('table-of-contents');
-	var tocContainer = document.getElementById('toc-container');
+                    link.innerHTML = `<span class="text-brand text-[10px] flex-shrink-0">►</span> <span class="truncate">${heading.innerText}</span>`;
 
-	if (postContent && tocNav) {
-		var headings = postContent.querySelectorAll('h2, h3');
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href').substring(1);
+                        const targetElement = document.getElementById(targetId);
 
-		if (headings.length > 0) {
-			tocNav.innerHTML = '';
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            history.pushState(null, null, '#' + targetId);
+                        }
+                    });
 
-			headings.forEach(function (heading, index) {
-				if (!heading.id) {
-					var slug = heading.innerText
-						.toLowerCase()
-						.normalize('NFD')
-						.replace(/[\u0300-\u036f]/g, '')
-						.replace(/[^a-z0-9 -]/g, '')
-						.replace(/\s+/g, '-')
-						.replace(/-+/g, '-');
-					heading.id = slug || 'topico-' + index;
-				}
-
-				heading.classList.add('scroll-mt-28');
-
-				var link = document.createElement('a');
-				link.href = '#' + heading.id;
-				link.className = 'hover:text-brand transition-colors text-xs font-semibold py-1.5 flex items-center gap-2 border-b border-subtle/30 sm:border-0';
-				if (heading.tagName.toLowerCase() === 'h3') {
-					link.classList.add('pl-4', 'opacity-80');
-				}
-				link.innerHTML = '<span class="text-brand text-[10px] flex-shrink-0">►</span> <span class="truncate">' + heading.innerText + '</span>';
-
-				link.addEventListener('click', function (e) {
-					e.preventDefault();
-					var targetId = this.getAttribute('href').substring(1);
-					var targetEl = document.getElementById(targetId);
-					if (targetEl) {
-						targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-						history.pushState(null, null, '#' + targetId);
-					}
-				});
-
-				tocNav.appendChild(link);
-			});
-		} else if (tocContainer) {
-			tocContainer.style.display = 'none';
-		}
-	}
+                    target.appendChild(link);
+                });
+            });
+        } else {
+            const mobileToc = document.getElementById('toc-container-mobile');
+            const desktopToc = document.getElementById('toc-container-desktop');
+            if (mobileToc) mobileToc.style.display = 'none';
+            if (desktopToc) desktopToc.style.display = 'none';
+        }
+    }
 });

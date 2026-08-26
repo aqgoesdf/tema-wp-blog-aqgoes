@@ -2,9 +2,9 @@
    AQGOES THEME - CSS CONSOLIDADO E OTIMIZADO
    ========================================================================== */
 
-/* ── 1. VARIÁVEIS DO SISTEMA DE TEMA (TOKENS) ── */
+/* ── 1. VARIÁVEIS DE TEMA (TOKENS ORIGINAIS) ── */
 :root {
-  /* Modo Claro (Padrão) */
+  /* Modo Claro (Dia) */
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
   --bg-card: #ffffff;
@@ -14,11 +14,10 @@
   --text-muted: #64748b;
   --border-subtle: #e2e8f0;
   --brand-color: #2563eb;
-  --grad-primary: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #60a5fa 100%);
 }
 
 .dark {
-  /* Modo Escuro */
+  /* Modo Escuro (Noite - Original) */
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
   --bg-card: #1e293b;
@@ -27,11 +26,10 @@
   --text-primary: #f8fafc;
   --text-muted: #94a3b8;
   --border-subtle: #334155;
-  --brand-color: #3b82f6;
-  --grad-primary: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
+  --brand-color: #2563eb;
 }
 
-/* ── 2. CLASSES UTILITÁRIAS DE MAPEAMENTO ── */
+/* ── 2. MAPEAMENTO DE CLASSES UTILITÁRIAS ── */
 .bg-primary { background-color: var(--bg-primary); }
 .bg-secondary { background-color: var(--bg-secondary); }
 .bg-card { background-color: var(--bg-card); }
@@ -43,100 +41,124 @@
 
 .border-subtle, .border-custom { border-color: var(--border-subtle); }
 
-.text-gradient {
-  background: var(--grad-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Transição suave ao alternar de tema */
-body, header, footer, article, button, input, aside {
+body, header, footer, article, button, input, textarea, aside {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
-/* ── 3. SCROLLBAR CUSTOMIZADA ── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--brand-color); border-radius: 3px; }
 
-/* ── 4. ESTILIZAÇÃO DO CONTEÚDO DOS ARTIGOS (#post-content) ── */
-#post-content p {
-  margin-bottom: 1.25rem;
-  line-height: 1.75;
-}
-
-#post-content h1, 
-#post-content h2, 
-#post-content h3, 
-#post-content h4 {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 700;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+/* ── 3. FORMULÁRIO DE COMENTÁRIOS NATIVO (ESTILIZADO) ── */
+#comments-section {
   color: var(--text-primary);
 }
 
-#post-content h2 { font-size: 1.75rem; }
-#post-content h3 { font-size: 1.35rem; }
-
-/* Listas com marcação (Bolinhas e Números) */
-#post-content ul {
-  list-style-type: disc;
-  padding-left: 1.5rem;
+#comments-section .comments-title,
+#comments-section .comment-reply-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
   margin-bottom: 1.25rem;
 }
 
-#post-content ol {
-  list-style-type: decimal;
-  padding-left: 1.5rem;
-  margin-bottom: 1.25rem;
+/* Form inputs & textarea */
+.comment-form p {
+  margin-bottom: 1rem;
 }
 
-#post-content li {
+.comment-form label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.comment-form input[type="text"],
+.comment-form input[type="email"],
+.comment-form input[type="url"],
+.comment-form textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.comment-form input[type="text"]:focus,
+.comment-form input[type="email"]:focus,
+.comment-form input[type="url"]:focus,
+.comment-form textarea:focus {
+  border-color: var(--brand-color);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.comment-form input[type="submit"] {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border-radius: 0.75rem;
+  background-color: var(--brand-color);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s;
+}
+
+.comment-form input[type="submit"]:hover {
+  filter: brightness(0.9);
+  transform: translateY(-1px);
+}
+
+/* Lista de Comentários */
+.comment-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+.comment-list li {
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-primary);
+}
+
+.comment-list .children {
+  list-style: none;
+  padding-left: 1.25rem;
+  margin-top: 1rem;
+  border-left: 2px solid var(--border-subtle);
+}
+
+.comment-author {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.comment-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
   margin-bottom: 0.5rem;
 }
 
-/* Links e Citações */
-#post-content a {
-  color: var(--brand-color);
-  text-decoration: underline;
+.comment-content {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-primary);
 }
 
-#post-content blockquote {
-  border-left-width: 4px;
-  border-color: var(--brand-color);
-  padding-left: 1rem;
-  font-style: italic;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-/* ── 5. COMPONENTES ADICIONAIS DE NAVEGAÇÃO ── */
-.cat-btn {
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 0.45rem 1rem;
-  border-radius: 99px;
-  border: 1.5px solid var(--border-subtle);
-  background: var(--bg-secondary);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.cat-btn:hover, .cat-btn.active {
-  border-color: var(--brand-color);
-  background: var(--brand-color);
-  color: #ffffff;
-}
-
-.tag-badge {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  padding: 0.22rem 0.6rem;
-  border-radius: 3px;
-  background: var(--brand-color);
-  color: #ffffff;
+.reply a {
   display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brand-color);
 }

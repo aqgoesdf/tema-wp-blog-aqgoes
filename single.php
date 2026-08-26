@@ -72,7 +72,7 @@ get_header(); ?>
       </header>
 
       <!-- BARRA DE AÇÕES -->
-      <div class="border-y border-subtle py-4 mb-12 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted">
+      <div class="border-y border-subtle py-4 mb-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted">
         <div class="flex items-center gap-3">
           <span class="font-bold text-primary">Compartilhe:</span>
           <div class="flex items-center gap-3">
@@ -90,93 +90,21 @@ get_header(); ?>
         </div>
       </div>
 
-      <!-- CORPO DO ARTIGO -->
+      <!-- TÓPICOS MOBILE (STICKY NO TOPO) -->
+      <div id="toc-container-mobile" class="block lg:hidden sticky top-20 z-30 mb-8 p-5 rounded-2xl border border-subtle bg-secondary/95 backdrop-blur-md shadow-xl">
+        <h4 class="font-title font-bold text-sm text-primary border-b border-subtle pb-2 mb-2 flex items-center gap-2">
+          <span class="text-brand">📌</span> Navegue por tópicos
+        </h4>
+        <nav class="table-of-contents-target flex flex-col space-y-1 text-xs text-muted max-h-40 overflow-y-auto pr-1">
+          <p class="text-xs opacity-75">Carregando tópicos...</p>
+        </nav>
+      </div>
+
+      <!-- CORPO PRINCIPAL COM SIDEBAR -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
-        <!-- SIDEBAR (NAVEGUE POR TÓPICOS PRIMEIRO NO MOBILE, À DIREITA NO DESKTOP) -->
-        <aside class="lg:col-span-4 order-first lg:order-last space-y-6">
-
-          <!-- WIDGET 1: NAVEGUE POR TÓPICOS (FIXO NO DESKTOP) -->
-          <div id="toc-container" class="sticky top-28 z-20 p-6 rounded-3xl border border-subtle bg-secondary shadow-xl space-y-3">
-            <h4 class="font-title font-bold text-base text-primary border-b border-subtle pb-3 flex items-center gap-2">
-              <span class="text-brand">📌</span> Navegue por tópicos
-            </h4>
-            <nav id="table-of-contents" class="flex flex-col space-y-1 text-sm text-muted max-h-[35vh] sm:max-h-[50vh] overflow-y-auto pr-2">
-              <p class="text-xs opacity-75">Carregando tópicos...</p>
-            </nav>
-          </div>
-
-          <!-- WIDGETS SECUNDÁRIOS DA SIDEBAR (OCULTOS NO MOBILE SE PREFERIR, OU EXIBIDOS ABAIXO DO TEXTO NO DESKTOP) -->
-          <div class="hidden lg:block space-y-6">
-
-            <!-- WIDGET 2: SOBRE O AUTOR -->
-            <div class="p-6 rounded-3xl border border-subtle bg-secondary shadow-xl space-y-4">
-              <h4 class="font-title font-bold text-base text-primary border-b border-subtle pb-3">Sobre o Autor</h4>
-              <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl overflow-hidden border border-brand/30 bg-subtle flex-shrink-0">
-                  <?php echo get_avatar( get_the_author_meta( 'ID' ), 128, '', get_the_author(), array( 'class' => 'w-full h-full object-cover' ) ); ?>
-                </div>
-                <div>
-                  <h5 class="font-title font-bold text-sm text-primary"><?php the_author(); ?></h5>
-                  <p class="text-xs text-muted mt-1"><?php echo esc_html( $author_bio ? $author_bio : 'Desenvolvedor e produtor de conteúdo técnico.' ); ?></p>
-                </div>
-              </div>
-            </div>
-
-            <!-- WIDGET 3: ARTIGOS RELACIONADOS -->
-            <div class="p-6 rounded-3xl border border-subtle bg-secondary shadow-xl space-y-4">
-              <h4 class="font-title font-bold text-base text-primary border-b border-subtle pb-3">Artigos Relacionados</h4>
-              <div class="space-y-4">
-                <?php
-                $related_query = new WP_Query( array(
-                    'post_type'      => 'post',
-                    'posts_per_page' => 3,
-                    'post__not_in'   => array( get_the_ID() ),
-                    'category__in'   => wp_get_post_categories( get_the_ID() ),
-                ) );
-
-                if ( $related_query->have_posts() ) :
-                  while ( $related_query->have_posts() ) : $related_query->the_post();
-                ?>
-                    <article class="flex items-center gap-3 group">
-                      <a href="<?php the_permalink(); ?>" class="w-16 h-16 rounded-xl overflow-hidden bg-subtle flex-shrink-0 block">
-                        <?php if ( has_post_thumbnail() ) : ?>
-                          <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'w-full h-full object-cover transition-transform duration-300 group-hover:scale-105' ) ); ?>
-                        <?php else : ?>
-                          <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=150&q=80" class="w-full h-full object-cover" alt="<?php the_title_attribute(); ?>"/>
-                        <?php endif; ?>
-                      </a>
-                      <div>
-                        <h6 class="font-title text-xs font-bold text-primary group-hover:text-brand transition-colors line-clamp-2">
-                          <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                        </h6>
-                        <span class="text-[10px] text-muted mt-1 block"><?php echo esc_html( get_the_date( 'd/m/Y' ) ); ?></span>
-                      </div>
-                    </article>
-                <?php
-                  endwhile;
-                  wp_reset_postdata();
-                endif;
-                ?>
-              </div>
-            </div>
-
-            <!-- WIDGET 4: NEWSLETTER -->
-            <div class="p-6 rounded-3xl bg-brand text-white shadow-2xl space-y-3">
-              <h4 class="font-title font-extrabold text-lg">Receba novos tutoriais</h4>
-              <p class="text-xs text-white/80">Junte-se à nossa lista de e-mails para conteúdos técnicos.</p>
-              <form class="space-y-2" onsubmit="event.preventDefault();">
-                <input type="email" placeholder="Seu melhor e-mail" required class="w-full px-4 py-2.5 rounded-xl text-xs text-slate-800 bg-white border-0 focus:outline-none" />
-                <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-xs hover:bg-slate-800 transition-all">Inscrever-se</button>
-              </form>
-            </div>
-
-          </div>
-
-        </aside>
-
-        <!-- CONTEÚDO PRINCIPAL DO ARTIGO (SEGUNDO NO MOBILE, À ESQUERDA NO DESKTOP) -->
-        <div class="lg:col-span-8 order-last lg:order-first space-y-8">
+        <!-- CONTEÚDO DO POST (8 COLUNAS) -->
+        <div class="lg:col-span-8 space-y-8">
           <?php if ( has_excerpt() ) : ?>
             <div class="p-6 rounded-2xl bg-secondary border-l-4 border-brand italic text-lg text-primary/90 leading-relaxed">
               <?php echo esc_html( get_the_excerpt() ); ?>
@@ -186,7 +114,141 @@ get_header(); ?>
           <div id="post-content" class="prose prose-lg dark:prose-invert max-w-none text-primary leading-relaxed space-y-6">
             <?php the_content(); ?>
           </div>
+
+          <!-- ÁREA: VEJA TAMBÉM -->
+          <section id="veja-tambem" class="pt-8 border-t border-subtle mt-12 space-y-4">
+            <h3 class="font-title font-bold text-xl text-primary flex items-center gap-2">
+              <span class="text-brand">💡</span> Veja também
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <?php
+              $veja_tambem_query = new WP_Query( array(
+                  'post_type'      => 'post',
+                  'posts_per_page' => 2,
+                  'post__not_in'   => array( get_the_ID() ),
+                  'category__in'   => wp_get_post_categories( get_the_ID() ),
+                  'orderby'        => 'rand',
+              ) );
+
+              if ( $veja_tambem_query->have_posts() ) :
+                while ( $veja_tambem_query->have_posts() ) : $veja_tambem_query->the_post();
+              ?>
+                  <article class="p-4 rounded-2xl border border-subtle bg-secondary hover:border-brand/50 transition-all flex gap-4 items-center group">
+                    <a href="<?php the_permalink(); ?>" class="w-20 h-20 rounded-xl overflow-hidden bg-subtle flex-shrink-0 block">
+                      <?php if ( has_post_thumbnail() ) : ?>
+                        <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'w-full h-full object-cover group-hover:scale-105 transition-transform' ) ); ?>
+                      <?php else : ?>
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=150&q=80" class="w-full h-full object-cover" alt="<?php the_title_attribute(); ?>"/>
+                      <?php endif; ?>
+                    </a>
+                    <div>
+                      <span class="text-[10px] font-bold uppercase text-brand tracking-wider font-mono">
+                        <?php echo get_the_category()[0]->name ?? 'Geral'; ?>
+                      </span>
+                      <h4 class="font-title text-xs font-bold text-primary group-hover:text-brand transition-colors line-clamp-2 mt-1">
+                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                      </h4>
+                      <span class="text-[10px] text-muted mt-1 block"><?php echo esc_html( get_the_date( 'd/m/Y' ) ); ?></span>
+                    </div>
+                  </article>
+              <?php
+                endwhile;
+                wp_reset_postdata();
+              endif;
+              ?>
+            </div>
+          </section>
+
+          <!-- ÁREA: FORMULÁRIO DE COMENTÁRIOS (IGUAL AO ESTILO CONTATO) -->
+          <section id="comments-section" class="pt-8 border-t border-subtle mt-8">
+            <div class="p-6 sm:p-10 rounded-3xl border border-subtle bg-secondary shadow-xl">
+              <?php 
+              if ( comments_open() || get_comments_number() ) :
+                  comments_template();
+              endif; 
+              ?>
+            </div>
+          </section>
+
         </div>
+
+        <!-- SIDEBAR LATERAL (4 COLUNAS) -->
+        <aside class="lg:col-span-4 space-y-6">
+
+          <!-- TÓPICOS DESKTOP (STICKY TOP-28) -->
+          <div id="toc-container-desktop" class="hidden lg:block sticky top-28 z-20 p-6 rounded-3xl border border-subtle bg-secondary shadow-xl space-y-3">
+            <h4 class="font-title font-bold text-base text-primary border-b border-subtle pb-3 flex items-center gap-2">
+              <span class="text-brand">📌</span> Navegue por tópicos
+            </h4>
+            <nav class="table-of-contents-target flex flex-col space-y-1 text-sm text-muted max-h-[50vh] overflow-y-auto pr-2">
+              <p class="text-xs opacity-75">Carregando tópicos...</p>
+            </nav>
+          </div>
+
+          <!-- SOBRE O AUTOR -->
+          <div class="p-6 rounded-3xl border border-subtle bg-secondary shadow-xl space-y-4">
+            <h4 class="font-title font-bold text-base text-primary border-b border-subtle pb-3">Sobre o Autor</h4>
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl overflow-hidden border border-brand/30 bg-subtle flex-shrink-0">
+                <?php echo get_avatar( get_the_author_meta( 'ID' ), 128, '', get_the_author(), array( 'class' => 'w-full h-full object-cover' ) ); ?>
+              </div>
+              <div>
+                <h5 class="font-title font-bold text-sm text-primary"><?php the_author(); ?></h5>
+                <p class="text-xs text-muted mt-1"><?php echo esc_html( $author_bio ? $author_bio : 'Desenvolvedor e produtor de conteúdo técnico.' ); ?></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ARTIGOS RELACIONADOS -->
+          <div class="p-6 rounded-3xl border border-subtle bg-secondary shadow-xl space-y-4">
+            <h4 class="font-title font-bold text-base text-primary border-b border-subtle pb-3">Artigos Relacionados</h4>
+            <div class="space-y-4">
+              <?php
+              $related_query = new WP_Query( array(
+                  'post_type'      => 'post',
+                  'posts_per_page' => 3,
+                  'post__not_in'   => array( get_the_ID() ),
+                  'category__in'   => wp_get_post_categories( get_the_ID() ),
+              ) );
+
+              if ( $related_query->have_posts() ) :
+                while ( $related_query->have_posts() ) : $related_query->the_post();
+              ?>
+                  <article class="flex items-center gap-3 group">
+                    <a href="<?php the_permalink(); ?>" class="w-16 h-16 rounded-xl overflow-hidden bg-subtle flex-shrink-0 block">
+                      <?php if ( has_post_thumbnail() ) : ?>
+                        <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'w-full h-full object-cover transition-transform duration-300 group-hover:scale-105' ) ); ?>
+                      <?php else : ?>
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=150&q=80" class="w-full h-full object-cover" alt="<?php the_title_attribute(); ?>"/>
+                      <?php endif; ?>
+                    </a>
+                    <div>
+                      <h6 class="font-title text-xs font-bold text-primary group-hover:text-brand transition-colors line-clamp-2">
+                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                      </h6>
+                      <span class="text-[10px] text-muted mt-1 block"><?php echo esc_html( get_the_date( 'd/m/Y' ) ); ?></span>
+                    </div>
+                  </article>
+              <?php
+                endwhile;
+                wp_reset_postdata();
+              endif;
+              ?>
+            </div>
+          </div>
+
+          <!-- NEWSLETTER -->
+          <div class="p-6 rounded-3xl bg-brand text-white shadow-2xl space-y-3">
+            <h4 class="font-title font-extrabold text-lg">Receba novos tutoriais</h4>
+            <p class="text-xs text-white/80">Junte-se à nossa lista de e-mails para conteúdos técnicos.</p>
+            <form class="space-y-2" onsubmit="event.preventDefault();">
+              <input type="email" placeholder="Seu melhor e-mail" required class="w-full px-4 py-2.5 rounded-xl text-xs text-slate-800 bg-white border-0 focus:outline-none" />
+              <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-xs hover:bg-slate-800 transition-all">Inscrever-se</button>
+            </form>
+          </div>
+
+        </aside>
 
       </div>
 
