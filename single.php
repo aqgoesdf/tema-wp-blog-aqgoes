@@ -100,7 +100,11 @@ get_header(); ?>
         <h4 class="font-title font-bold text-sm text-primary border-b border-subtle pb-2 mb-2 flex items-center gap-2">
           <span class="text-brand">📌</span> Navegue por tópicos
         </h4>
+<<<<<<< HEAD
         <nav class="table-of-contents-target flex flex-col space-y-1 text-xs text-muted max-h-36 overflow-y-auto pr-1">
+=======
+        <nav class="table-of-contents-target flex flex-col space-y-1 text-xs text-muted max-h-40 overflow-y-auto pr-1">
+>>>>>>> 633e5474bbad001fcb5ce6d480e5dc9420cb07fe
           <p class="text-xs opacity-75">Carregando tópicos...</p>
         </nav>
       </div>
@@ -262,7 +266,11 @@ get_header(); ?>
   <?php endwhile; endif; ?>
 </main>
 
+<<<<<<< HEAD
 <!-- BOTÃO VOLTAR AO TOPO -->
+=======
+<!-- BOTÃO VOLTAR AO TOPO (ESTILO SETA FLUTUANTE) -->
+>>>>>>> 633e5474bbad001fcb5ce6d480e5dc9420cb07fe
 <button id="back-to-top" aria-label="Voltar ao topo" class="fixed bottom-6 right-6 z-50 p-3.5 rounded-2xl bg-brand text-white shadow-2xl opacity-0 translate-y-4 pointer-events-none transition-all duration-300 hover:bg-brand-hover hover:scale-110">
   <svg class="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
