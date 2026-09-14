@@ -1,2 +1,3 @@
 # tema-wp-blog-aqgoes
-Tema wordpes para o blog aqgoes.com
+Tema wordpes para o blog aqgoes.com/blog
+
