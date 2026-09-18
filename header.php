@@ -15,7 +15,7 @@
       <!-- Logo -->
       <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="font-title font-extrabold text-2xl tracking-tight text-accent flex items-center gap-2">
         <span class="w-3 h-3 rounded-full bg-brand inline-block"></span>
-        AqGoEs DeV<span class="text-brand">.</span>
+        AqGoEs - DeV<span class="text-brand">.</span>
       </a>
 
       <!-- Menu Desktop -->
