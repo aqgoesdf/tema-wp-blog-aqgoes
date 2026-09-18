@@ -82,7 +82,11 @@ body, header, footer, article, button, input, textarea, aside {
 
 /* Parágrafos do artigo */
 #post-content p {
+<<<<<<< HEAD
   font-size: 18px;
+=======
+  font-size: 26px;
+>>>>>>> f317d1555f8ce5bf96e89796b2b9c19ad3a00a5a
   margin-bottom: 1.25rem;
   line-height: 1.8;
   color: var(--text-primary);
