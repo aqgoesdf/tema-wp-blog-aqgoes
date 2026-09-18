@@ -170,3 +170,21 @@ function aqgoes_custom_pagination( $query = null, $offset_count = 0 ) {
 
     <?php
 }
+
+
+/*Criar a versão do tema */
+require get_template_directory() . '/path-to-update-checker/plugin-update-checker.php';
+
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$myUpdateChecker = PucFactory::buildUpdateChecker(
+    'https://github.com/aqgoesdf/tema-wp-blog-aqgoes', // URL do seu repositório no GitHub
+    __FILE__,
+    'tema-wp-blog-aqgoes' // O slug exato da pasta do tema
+);
+
+// Opcional: Se o repositório for privado, defina o token de acesso
+// $myUpdateChecker->setAuthentication('seu-token-do-github');
+
+// Opcional: Definir a branch padrão (geralmente 'main' ou 'master')
+$myUpdateChecker->setBranch('main');
